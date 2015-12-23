@@ -4,7 +4,7 @@ A parser for selecting a shortlist of variants from an Alamut file.
 
 ##Installation
 
-Clone the repository to your web server's public directory, initiallizing Git if required;
+Clone the repository to a suitable directory, initiallizing Git if required;
 
 ```bash
 	git init
