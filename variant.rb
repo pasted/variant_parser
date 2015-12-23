@@ -39,7 +39,7 @@ class Variant
 			variable_order = [:gene, :genotype, :cdna_nomen, :protein_nomen, :coding_effect, :var_type, :var_location, :exon, :intron, :distance_nearest_splice_site, :nearest_splice_site_type]          
 			variable_order = variable_order + [:nearest_splice_site_change, :local_splice_effect, :hgmd_phenotype, :hgmd_pub_med_id, :hgmd_sub_category, :rs_id, :rs_validated, :rs_maf, :esp_all_maf, :n_orthos]                                                                                                                                                                                   
 			variable_order = variable_order + [:conserved_orthos, :conserved_dist_species, :grantham_dist, :agv_gd_class, :sift_prediction, :wt_nuc, :var_nuc, :ins_nucs, :del_nucs, :filter_vcf]                                                                                                                                                                 
-			variable_order = variable_order + [:ad, :dp, :gq, :gt, :pl, :chromosome, :position, :genomic_dna_start, :genomic_dna_end, :transcript, :genomic_nomen, :reason_for_selection]
+			variable_order = variable_order + [:chromosome, :position, :genomic_dna_start, :genomic_dna_end, :transcript, :genomic_nomen, :reason_for_selection]
 			return variable_order
 		end
 		

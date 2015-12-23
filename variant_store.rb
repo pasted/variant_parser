@@ -11,7 +11,7 @@ class VariantStore
   		
   		#Loop through variants 
   		self.variants.each do |this_variant|
-  				puts this_variant.gene
+  				
   				selected = false
   				#Check if the transcript is correct
   				if ( special_gene_symbols.include?(this_variant.gene) )

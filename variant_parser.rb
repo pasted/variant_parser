@@ -134,17 +134,40 @@ class VariantParser
 		
 		return gene_symbol_list
 	end
-  
-  
+	
+	def variants_to_excel(results, workbook)
+		this_sheet = workbook.create_worksheet :name => "Selected variants"
+  	row_number = 0
+		header_array = Array.new
+
+		results[0].each do |this_selected_variant|
+			if header_array.empty?
+				header_array = this_selected_variant.variable_order
+				header_array.map!{ |element| element.to_s }
+ 			
+				header_array.each do |this_header|
+ 				this_sheet.row(row_number).push this_header  
+ 				end
+ 			end
+ 			row_number = row_number + 1
+ 		
+ 			#output variables to spreadsheet in given order
+ 			this_selected_variant.variable_order.map {|var|  this_sheet.row(row_number).push  "#{this_selected_variant.send(var)}" }
+ 		end
+ 		return workbook
+	end
+	
   opts = Trollop::options do
   	opt :variants, "Filepath to Alamut file to parse.", :type => String
   	opt :genes, "Filepath to text file with list of valid HGVS gene symbols - one symbol per line.", :type => String
+  	opt :excel_output, "Export results to an Excel spreadsheet."
   end
   
   #Trollop::die :alamut_file, "Alamut file must exist." unless File.exist?(opts[:alamut_file]) if opts[:alamut_file]
 
   variants_filepath = opts[:variants]
   genes_filepath = opts[:genes]
+  excel_output = opts[:excel_output]
   
   
   if variants_filepath && genes_filepath
@@ -158,6 +181,13 @@ class VariantParser
   	
   	variant_store = VariantStore.new(variants)
   	results = variant_store.select_variants(gene_symbol_list)
+  	if excel_output
+  		this_book = Spreadsheet::Workbook.new
+  		this_book = parser.variants_to_excel(results, this_book)
+  		this_book.write "#{Time.now.strftime("%d-%m-%Y-%H%M%S")}_variants.xls"
+  	else
+
+  	end
 
   else
   	 puts "Check variants file and gene symbols file, try --help for further help."
