@@ -135,6 +135,20 @@ class VariantParser
 		return gene_symbol_list
 	end
 	
+	def parse_hpo_gene_list(hpo_genes_filepath)
+		
+		gene_symbol_list = Array.new
+		File.foreach(hpo_genes_filepath) do |line|
+			if !( line.match('Export for') || line.match('Associated diseases') || line.match('Total') )
+				gene_symbol = line.split('","').first.delete('"').split(' ').first
+				gene_symbol_list.push(gene_symbol)
+			end
+			
+		end
+		
+		return gene_symbol_list
+	end
+	
 	def variants_to_excel(results, workbook)
 		this_sheet = workbook.create_worksheet :name => "Selected variants"
   	row_number = 0
@@ -160,6 +174,7 @@ class VariantParser
   opts = Trollop::options do
   	opt :variants, "Filepath to Alamut file to parse.", :type => String
   	opt :genes, "Filepath to text file with list of valid HGVS gene symbols - one symbol per line.", :type => String
+  	opt :hpo_genes, "Filepath to CSV export from HPO web browser.", :type => String
   	opt :excel_output, "Export results to an Excel spreadsheet."
   end
   
@@ -167,15 +182,19 @@ class VariantParser
 
   variants_filepath = opts[:variants]
   genes_filepath = opts[:genes]
+  hpo_genes_filepath = opts[:hpo_genes]
   excel_output = opts[:excel_output]
   
   
-  if variants_filepath && genes_filepath
+  if variants_filepath && (genes_filepath || hpo_genes_filepath)
 
   	
   	parser = VariantParser.new()
-  	
-  	gene_symbol_list = parser.parse_gene_list(genes_filepath)
+  	if hpo_genes_filepath
+  		gene_symbol_list = parser.parse_hpo_gene_list(hpo_genes_filepath)
+  	elsif genes_filepath
+  		gene_symbol_list = parser.parse_gene_list(genes_filepath)
+  	end
   	sample_ids = parser.parse_sample_ids(variants_filepath)
   	variants = parser.parse_alamut_file(variants_filepath, sample_ids)
   	
@@ -184,9 +203,10 @@ class VariantParser
   	if excel_output
   		this_book = Spreadsheet::Workbook.new
   		this_book = parser.variants_to_excel(results, this_book)
-  		this_book.write "#{Time.now.strftime("%d-%m-%Y-%H%M%S")}_variants.xls"
+  		this_book.write "results/#{Time.now.strftime("%d-%m-%Y-%H%M%S")}_variants.xls"
   	else
-
+  		puts results.inspect
+  		puts "#{results.length} variants selected"
   	end
 
   else
