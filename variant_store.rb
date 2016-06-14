@@ -47,7 +47,7 @@ class VariantStore
 										this_variant.reason_for_selection = "Local splice effect"
 										selected_variants.push(this_variant)
 										selected = true
-									elsif ['upstream', '5\'UTR', '3\'UTR', 'downstream'].include?(this_variant.var_location)
+									elsif ( ['upstream', '5\'UTR', '3\'UTR', 'downstream'].include?(this_variant.var_location) && ( (-50..10).include?(this_variant.distance_nearest_splice_site.to_i) )
 									#upstream, 5'UTR, exon, intron, 3'UTR, downstream
 									#6.	Select all variants with 'varLocation' of '3_UTR', '5_UTR', 'Upstream' and 'Downstream'
 										this_variant.reason_for_selection = "Variant location"
@@ -57,7 +57,7 @@ class VariantStore
 									
 								end # coding_effect
 													
-							elsif this_variant.var_type != 'substitution'
+							elsif ( this_variant.var_type != 'substitution' ) && ( (-50..10).include?(this_variant.distance_nearest_splice_site.to_i) )
 								#2. Select all Indels : var_type = ['duplication', 'insertion', 'deletion', 'delins']
 								#7.	Select all unannotated variants as these will be in specifically selected non-coding ROIs known to contain pathogenic mutations
 								this_variant.reason_for_selection = "Indel"
