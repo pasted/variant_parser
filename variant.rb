@@ -65,7 +65,7 @@ class Variant
 			variable_order = variable_order + [:quality_vcf, :filter_vcf]
 			variable_order = variable_order + [:ac, :af, :an, :dp, :fs, :mq, :mq_0, :qd]
 			variable_order = variable_order + [:alleles]
-			variable_order = variable_order + [:reason_for_selection, :reason_for_non_selection, :reason_for_filtering]
+			variable_order = variable_order + [:reason_for_selection]
 
 			return variable_order
 		end
