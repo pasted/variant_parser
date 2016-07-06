@@ -22,7 +22,7 @@ class VariantParser
   			this_variant.genomic_dna_start							= csv.first[:gdnastart]
   			this_variant.genomic_dna_end								= csv.first[:gdnaend]
   			this_variant.gene														= csv.first[:gene]
-  			                                  					
+  			this_variant.gene_id												=	csv.first[:geneid]                             					
   			this_variant.full_transcript								= csv.first[:transcript]
   			this_variant.var_type												= csv.first[:vartype]
   			this_variant.coding_effect									= csv.first[:codingeffect]
@@ -121,7 +121,7 @@ class VariantParser
   	header_array = header.split(/\t/)
   	genotype_fields = header_array.select{ |e| e=~/GT/ }
   	sample_ids = genotype_fields.collect{ |e| e.gsub(/GT |\(|\)/, '') }
-  	
+  	sample_ids.map{|id| id.downcase!}
   	return sample_ids
 	end
 	
@@ -137,16 +137,18 @@ class VariantParser
 	
 	def parse_hpo_gene_list(hpo_genes_filepath)
 		
-		gene_symbol_list = Array.new
+		gene_id_list = Array.new
 		File.foreach(hpo_genes_filepath) do |line|
 			if !( line.match('Export for') || line.match('Associated diseases') || line.match('Total') )
 				gene_symbol = line.split('","').first.delete('"').split(' ').first
-				gene_symbol_list.push(gene_symbol)
+				hgnc_id = line.split('","').first.delete('"').split(' ')[1].delete('(').delete(')')
+				gene_id_list.push(hgnc_id)
+				
 			end
 			
 		end
-		
-		return gene_symbol_list
+		gene_id_list.sort!
+		return gene_id_list
 	end
 	
 	def variants_to_excel(results, workbook)
@@ -155,18 +157,21 @@ class VariantParser
 		header_array = Array.new
 
 		results[0].each do |this_selected_variant|
+			puts this_selected_variant.inspect
 			if header_array.empty?
 				header_array = this_selected_variant.variable_order
 				header_array.map!{ |element| element.to_s }
- 			
+				vcf_headers = this_selected_variant.print_alleles.map {|var| var[0]}
+				header_array = header_array + vcf_headers
 				header_array.each do |this_header|
- 				this_sheet.row(row_number).push this_header  
+					this_sheet.row(row_number).push this_header  
  				end
  			end
  			row_number = row_number + 1
  		
  			#output variables to spreadsheet in given order
  			this_selected_variant.variable_order.map {|var|  this_sheet.row(row_number).push  "#{this_selected_variant.send(var)}" }
+ 			this_selected_variant.print_alleles.map {|var| this_sheet.row(row_number).push "#{var[1]}" }
  		end
  		return workbook
 	end
@@ -188,18 +193,25 @@ class VariantParser
   
   if variants_filepath && (genes_filepath || hpo_genes_filepath)
 
-  	
+  	gene_symbol_list = []
+  	gene_id_list = []
   	parser = VariantParser.new()
+  	
   	if hpo_genes_filepath
-  		gene_symbol_list = parser.parse_hpo_gene_list(hpo_genes_filepath)
+  		gene_id_list = parser.parse_hpo_gene_list(hpo_genes_filepath)
   	elsif genes_filepath
   		gene_symbol_list = parser.parse_gene_list(genes_filepath)
   	end
   	sample_ids = parser.parse_sample_ids(variants_filepath)
   	variants = parser.parse_alamut_file(variants_filepath, sample_ids)
+  	puts sample_ids.inspect
+
+  	puts variants.length
   	
   	variant_store = VariantStore.new(variants)
-  	results = variant_store.select_variants(gene_symbol_list)
+  	results = variant_store.select_variants(gene_symbol_list, gene_id_list)
+  	puts results[0].length
+  	
   	if excel_output
   		this_book = Spreadsheet::Workbook.new
   		this_book = parser.variants_to_excel(results, this_book)

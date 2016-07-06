@@ -5,7 +5,7 @@ class VariantStore
 			self.variants = variants
   	end
   	    
-    def select_variants(special_gene_symbols)
+    def select_variants(special_gene_symbols, special_gene_ids)
     	selected_variants = Array.new
   		not_selected_variants = Array.new
   		
@@ -14,7 +14,7 @@ class VariantStore
   				
   				selected = false
   				#Check if the transcript is correct
-  				if ( special_gene_symbols.include?(this_variant.gene) )
+  				if ( special_gene_symbols.include?(this_variant.gene) || special_gene_ids.include?("#{this_variant.gene_id}") )
   					
   						if ['DM', 'DM?', 'FTV', 'R'].include?(this_variant.hgmd_sub_category)
 								# DP, DFP, FP, FTV, DM?, DM, R

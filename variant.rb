@@ -1,6 +1,6 @@
 class Variant
 
-	  attr_accessor :id, :unannotated_reason, :gene, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand
+	  attr_accessor :id, :unannotated_reason, :gene, :gene_id, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand
 		attr_accessor :transcript_length, :protein, :uniprot, :var_type, :coding_effect, :var_location
 		attr_accessor :assembly, :genomic_dna_start, :genomic_dna_end, :genomic_nomen
 		attr_accessor :complementary_dna_start, :complementary_dna_end, :cdna_nomen
@@ -37,7 +37,7 @@ class Variant
 
 		def variable_order
 			
-			variable_order = [:id, :unannotated_reason, :gene, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand]
+			variable_order = [:id, :unannotated_reason, :gene, :gene_id, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand]
 			variable_order = variable_order + [:transcript_length, :protein, :uniprot, :var_type, :coding_effect, :var_location]
 			variable_order = variable_order + [:assembly, :genomic_dna_start, :genomic_dna_end, :genomic_nomen]
 			variable_order = variable_order + [:complementary_dna_start, :complementary_dna_end, :cdna_nomen]
@@ -69,6 +69,23 @@ class Variant
 
 			return variable_order
 		end
+		
+
+		def print_alleles
+				allele_hash = Hash.new
+
+				self.alleles.each_pair do |this_sample_id, this_allele|
+					     
+					allele_hash.store("#{this_sample_id}_ad", this_allele.ad )
+					allele_hash.store("#{this_sample_id}_dp", this_allele.dp )
+					allele_hash.store("#{this_sample_id}_gq", this_allele.gq )
+					allele_hash.store("#{this_sample_id}_gt", this_allele.gt )
+					allele_hash.store("#{this_sample_id}_pl", this_allele.pl )
+
+				end
+				return allele_hash
+		end
+
 		
 		def print_attributes
 			attr_array = Array.new
