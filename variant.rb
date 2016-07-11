@@ -1,25 +1,34 @@
 class Variant
 
-	  attr_accessor :id, :unannotated_reason, :gene, :gene_id, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand
+		
+	  attr_accessor :id, :unannotated_reason, :gene_id, :gene, :gene_description, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand
+	  attr_accessor :go_bio_process, :go_cell_comp, :go_mol_func
 		attr_accessor :transcript_length, :protein, :uniprot, :var_type, :coding_effect, :var_location
 		attr_accessor :assembly, :genomic_dna_start, :genomic_dna_end, :genomic_nomen
 		attr_accessor :complementary_dna_start, :complementary_dna_end, :cdna_nomen
-		attr_accessor :protein_nomen, :alt_protein_nomen, :exon, :intron, :omim_id
+		attr_accessor :protein, :uniprot, :protein_nomen, :alt_protein_nomen, :exon, :intron, :omim_id
 		attr_accessor :distance_nearest_splice_site, :nearest_splice_site_type
 		attr_accessor :wt_ssf_score, :wt_max_ent_score, :wt_nns_score, :wt_gs_score, :wt_hsf_score, :var_ssf_score, :var_max_ent_score
 		attr_accessor :var_nns_score, :var_gs_score, :var_hsf_score, :nearest_splice_site_change, :local_splice_effect
+		attr_accessor :local_ss_pos, :local_ss_wt_nns_score, :local_ss_wt_hsf_score, :local_ss_var_max_ent_score, :local_ss_wt_max_ent_score, :local_ss_var_nns_score, :local_ss_var_hsf_score 
+		attr_accessor :branch_point_pos, :branch_point_change
 		attr_accessor :protein_domain_1, :protein_domain_2, :protein_domain_3, :protein_domain_4
 		attr_accessor :rs_id, :rs_validated, :rs_suspect, :rs_validations, :rs_validation_number, :rs_ancestral_allele
 		attr_accessor :rs_heterozygosity, :rs_clinical_significance, :rs_maf, :rs_maf_allele, :rs_maf_count
-		attr_accessor :genomes_1000_freq, :genomes_1000_afr_freq,	:genomes_1000_sas_freq, :genomes_1000_eas_freq, :genomes_1000_eur_freq, :genomes_1000_amr_freq
-		attr_accessor :exac_all_freq,	:exac_afr_freq, :exac_amr_freq, :exac_eas_freq, :exac_sas_freq, :exac_nfe_freq, :exac_fin_freq, :exac_oth_freq
-		attr_accessor :exac_afr_hmz, :exac_amr_hmz, :exac_eas_hmz, :exac_sas_hmz, :exac_nfe_hmz, :exac_fin_hmz, :exac_oth_hmz, :exac_filter, :exac_read_depth
+		attr_accessor :genomes_1000_freq, :genomes_1000_afr_freq, :genomes_1000_sas_freq, :genomes_1000_eas_freq, :genomes_1000_eur_freq, :genomes_1000_amr_freq
+		attr_accessor :exac_alt_freq_all, :exac_alt_afr_freq, :exac_alt_amr_freq, :exac_alt_eas_freq, :exac_alt_sas_freq, :exac_alt_nfe_freq, :exac_alt_fin_freq, :exac_alt_oth_freq
+		attr_accessor :exac_alt_count_all, :exac_alt_count_afr, :exac_alt_count_amr, :exac_alt_count_eas, :exac_alt_count_sas, :exac_alt_count_nfe, :exac_alt_count_fin, :exac_alt_count_oth
+		attr_accessor :exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth	
+		attr_accessor :exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth, :exac_filter, :exac_read_depth
+		attr_accessor :exac_total_count_all, :exac_total_count_afr, :exac_total_count_amr, :exac_total_count_eas, :exac_total_count_sas, :exac_total_count_nfe, :exac_total_count_fin, :exac_total_count_oth
+		attr_accessor :exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth
+		attr_accessor :exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth
 		attr_accessor :esp_ref_ea_count, :esp_ref_aa_count, :esp_ref_all_count, :esp_alt_ea_count, :esp_alt_aa_count
-		attr_accessor :esp_alt_all_count, :esp_ea_maf, :esp_aa_maf, :esp_all_maf, :esp_eaaaf,	:esp_aaaaf, :esp_all_aaf, :esp_avg_read_depth
-		attr_accessor :hgmd_id, :hgmd_phenotype, :hgmd_pub_med_id, :hgmd_sub_category
-		attr_accessor :clin_var_ids,	:clin_var_origins, :clin_var_methods, :clin_var_clin_signifs, :clin_var_review_status, :clin_var_phenotypes
+		attr_accessor :esp_alt_all_count, :esp_ea_maf, :esp_aa_maf, :esp_all_maf, :esp_ea_aaf, :esp_aa_aaf, :esp_all_aaf, :esp_avg_read_depth                                                                               
+		attr_accessor :hgmd_id, :hgmd_phenotype, :hgmd_pub_med_id, :hgmd_sub_category                                                                                                                                      
+		attr_accessor :clin_var_ids, :clin_var_origins, :clin_var_methods, :clin_var_clin_signifs, :clin_var_review_status, :clin_var_phenotypes
 		attr_accessor :cosmic_ids, :cosmic_tissues, :cosmic_freqs, :cosmic_sample_counts
-		attr_accessor :ins_nucs, :del_nucs, :subst_type, :wt_nuc, :var_nuc, :nuc_change, :phast_cons, :phylo_p
+		attr_accessor :subst_type, :ins_nucs, :del_nucs, :subst_type, :wt_nuc, :var_nuc, :nuc_change, :phast_cons, :phylo_p
 		attr_accessor :wt_aa_1, :wt_aa_3, :wt_codon, :wt_codon_freq, :var_aa_1, :var_aa_3, :var_codon, :var_codon_freq
 		attr_accessor :pos_aa, :n_orthos, :conserved_orthos, :conserved_dist_species
 		attr_accessor :blosum_45, :blosum_62, :blosum_80, :wt_aa_composition, :var_aa_composition, :wt_aa_polarity
@@ -27,48 +36,50 @@ class Variant
 		attr_accessor :sift_prediction, :sift_weight, :sift_median, :mapp_prediction, :mapp_p_value, :mapp_p_value_median
 		attr_accessor :quality_vcf, :filter_vcf
 		attr_accessor :ac, :af, :an, :dp, :fs, :mq, :mq_0, :qd
+		attr_accessor :ad, :dp, :gq, :gt, :pl
 		attr_accessor :alleles
-		#attr_accessor :ad, :dp, :gq, :gt, :pl
 		attr_accessor :reason_for_selection, :reason_for_non_selection, :reason_for_filtering
 
 		def initialize
 			self.alleles = Hash.new
 		end
 
-		def variable_order
+		def variable_order						
+				variable_order = [:reason_for_selection, :gene, :genotype, :assembly, :position, :genomic_dna_start, :genomic_dna_end, :genomic_nomen, :coding_effect, :var_type, :var_location]
+				variable_order = variable_order + [:complementary_dna_start, :complementary_dna_end, :cdna_nomen]
+				variable_order = variable_order + [:exon, :intron, :distance_nearest_splice_site, :nearest_splice_site_type, :nearest_splice_site_change]
+				variable_order = variable_order + [:transcript_length, :protein, :uniprot]
+				variable_order = variable_order + [:protein_nomen, :alt_protein_nomen, :exon, :intron, :omim_id]
+				variable_order = variable_order + [:distance_nearest_splice_site, :nearest_splice_site_type]
+				variable_order = variable_order + [:wt_ssf_score, :wt_max_ent_score, :wt_nns_score, :wt_gs_score, :wt_hsf_score, :var_ssf_score, :var_max_ent_score]
+				variable_order = variable_order + [:var_nns_score, :var_gs_score, :var_hsf_score, :nearest_splice_site_change, :local_splice_effect]
+				variable_order = variable_order + [:rs_id, :rs_validated, :rs_suspect, :rs_validations, :rs_validation_number, :rs_ancestral_allele]
+				variable_order = variable_order + [:rs_heterozygosity, :rs_clinical_significance, :rs_maf, :rs_maf_allele, :rs_maf_count]
+				variable_order = variable_order + [:genomes_1000_freq, :genomes_1000_afr_freq,	:genomes_1000_sas_freq, :genomes_1000_eas_freq, :genomes_1000_eur_freq, :genomes_1000_amr_freq]
+				variable_order = variable_order + [:exac_alt_freq_all, :exac_alt_afr_freq, :exac_alt_amr_freq, :exac_alt_eas_freq, :exac_alt_sas_freq, :exac_alt_nfe_freq, :exac_alt_fin_freq, :exac_alt_oth_freq]
+				variable_order = variable_order + [:exac_alt_count_all, :exac_alt_count_afr, :exac_alt_count_amr, :exac_alt_count_eas, :exac_alt_count_sas, :exac_alt_count_nfe, :exac_alt_count_fin, :exac_alt_count_oth]
+				variable_order = variable_order + [:exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth]
+				variable_order = variable_order + [:exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth, :exac_filter, :exac_read_depth]
+				variable_order = variable_order + [:exac_total_count_all, :exac_total_count_afr, :exac_total_count_amr, :exac_total_count_eas, :exac_total_count_sas, :exac_total_count_nfe, :exac_total_count_fin, :exac_total_count_oth]
+				variable_order = variable_order + [:exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth]
+				variable_order = variable_order + [:exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth]
+				variable_order = variable_order + [:esp_ref_ea_count, :esp_ref_aa_count, :esp_ref_all_count, :esp_alt_ea_count, :esp_alt_aa_count]
+				variable_order = variable_order + [:esp_alt_all_count, :esp_ea_maf, :esp_aa_maf, :esp_all_maf, :esp_ea_aaf,	:esp_aa_aaf, :esp_all_aaf, :esp_avg_read_depth]                                                                             				                        
+				variable_order = variable_order + [:hgmd_id, :hgmd_phenotype, :hgmd_pub_med_id, :hgmd_sub_category]
+				variable_order = variable_order + [:clin_var_ids,	:clin_var_origins, :clin_var_methods, :clin_var_clin_signifs, :clin_var_review_status, :clin_var_phenotypes]
+				variable_order = variable_order + [:ins_nucs, :del_nucs, :subst_type, :wt_nuc, :var_nuc, :nuc_change, :phast_cons, :phylo_p]
+				variable_order = variable_order + [:wt_aa_1, :wt_aa_3, :wt_codon, :wt_codon_freq, :var_aa_1, :var_aa_3, :var_codon, :var_codon_freq]
+				variable_order = variable_order + [:pos_aa, :n_orthos, :conserved_orthos, :conserved_dist_species]
+				variable_order = variable_order + [:blosum_45, :blosum_62, :blosum_80, :wt_aa_composition, :var_aa_composition, :wt_aa_polarity]
+				variable_order = variable_order + [:var_aa_polarity, :wt_aa_volume, :var_aa_volume, :grantham_dist, :agv_gd_class, :agv_gd_gv, :agv_gd_gd]
+				variable_order = variable_order + [:sift_prediction, :sift_weight, :sift_median, :mapp_prediction, :mapp_p_value, :mapp_p_value_median]
+				variable_order = variable_order + [:quality_vcf, :filter_vcf]
+				variable_order = variable_order + [:ac, :af, :an, :dp, :fs, :mq, :mq_0, :qd]
+				variable_order = variable_order + [:ad, :dp, :gq, :gt, :pl]
 			
-			variable_order = [:id, :unannotated_reason, :gene, :gene_id, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand]
-			variable_order = variable_order + [:transcript_length, :protein, :uniprot, :var_type, :coding_effect, :var_location]
-			variable_order = variable_order + [:assembly, :genomic_dna_start, :genomic_dna_end, :genomic_nomen]
-			variable_order = variable_order + [:complementary_dna_start, :complementary_dna_end, :cdna_nomen]
-			variable_order = variable_order + [:protein_nomen, :alt_protein_nomen, :exon, :intron, :omim_id]
-			variable_order = variable_order + [:distance_nearest_splice_site, :nearest_splice_site_type]
-			variable_order = variable_order + [:wt_ssf_score, :wt_max_ent_score, :wt_nns_score, :wt_gs_score, :wt_hsf_score, :var_ssf_score, :var_max_ent_score]
-			variable_order = variable_order + [:var_nns_score, :var_gs_score, :var_hsf_score, :nearest_splice_site_change, :local_splice_effect]
-			variable_order = variable_order + [:protein_domain_1, :protein_domain_2, :protein_domain_3, :protein_domain_4]
-			variable_order = variable_order + [:rs_id, :rs_validated, :rs_suspect, :rs_validations, :rs_validation_number, :rs_ancestral_allele]
-			variable_order = variable_order + [:rs_heterozygosity, :rs_clinical_significance, :rs_maf, :rs_maf_allele, :rs_maf_count]
-			variable_order = variable_order + [:genomes_1000_freq, :genomes_1000_afr_freq,	:genomes_1000_sas_freq, :genomes_1000_eas_freq, :genomes_1000_eur_freq, :genomes_1000_amr_freq]
-			variable_order = variable_order + [:exac_all_freq,	:exac_afr_freq, :exac_amr_freq, :exac_eas_freq, :exac_sas_freq, :exac_nfe_freq, :exac_fin_freq, :exac_oth_freq]
-			variable_order = variable_order + [:exac_afr_hmz, :exac_amr_hmz, :exac_eas_hmz, :exac_sas_hmz, :exac_nfe_hmz, :exac_fin_hmz, :exac_oth_hmz, :exac_filter, :exac_read_depth]
-			variable_order = variable_order + [:esp_ref_ea_count, :esp_ref_aa_count, :esp_ref_all_count, :esp_alt_ea_count, :esp_alt_aa_count]
-			variable_order = variable_order + [:esp_alt_all_count, :esp_ea_maf, :esp_aa_maf, :esp_all_maf, :esp_eaaaf,	:esp_aaaaf, :esp_all_aaf, :esp_avg_read_depth]
-			variable_order = variable_order + [:hgmd_id, :hgmd_phenotype, :hgmd_pub_med_id, :hgmd_sub_category]
-			variable_order = variable_order + [:clin_var_ids,	:clin_var_origins, :clin_var_methods, :clin_var_clin_signifs, :clin_var_review_status, :clin_var_phenotypes]
-			variable_order = variable_order + [:cosmic_ids, :cosmic_tissues, :cosmic_freqs, :cosmic_sample_counts]
-			variable_order = variable_order + [:ins_nucs, :del_nucs, :subst_type, :wt_nuc, :var_nuc, :nuc_change, :phast_cons, :phylo_p]
-			variable_order = variable_order + [:wt_aa_1, :wt_aa_3, :wt_codon, :wt_codon_freq, :var_aa_1, :var_aa_3, :var_codon, :var_codon_freq]
-			variable_order = variable_order + [:pos_aa, :n_orthos, :conserved_orthos, :conserved_dist_species]
-			variable_order = variable_order + [:blosum_45, :blosum_62, :blosum_80, :wt_aa_composition, :var_aa_composition, :wt_aa_polarity]
-			variable_order = variable_order + [:var_aa_polarity, :wt_aa_volume, :var_aa_volume, :grantham_dist, :agv_gd_class, :agv_gd_gv, :agv_gd_gd]
-			variable_order = variable_order + [:sift_prediction, :sift_weight, :sift_median, :mapp_prediction, :mapp_p_value, :mapp_p_value_median]
-			variable_order = variable_order + [:quality_vcf, :filter_vcf]
-			variable_order = variable_order + [:ac, :af, :an, :dp, :fs, :mq, :mq_0, :qd]
-			variable_order = variable_order + [:alleles]
-			variable_order = variable_order + [:reason_for_selection]
-
 			return variable_order
 		end
+		
 		
 
 		def print_alleles
