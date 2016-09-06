@@ -1,5 +1,6 @@
 #Variant Parser
 A parser for selecting a shortlist of variants from an Alamut file.
+By specifying a list of candidate genes generated from HPO / Phenomizer, the Alamut input is parsed and a standard ruleset applied in order to reduce the number of variants to a shortlist of potential pathogenic ones. The Alamut input is generated from an WES VCF file.
 
 
 ##Installation
