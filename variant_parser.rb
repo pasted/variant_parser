@@ -6,6 +6,7 @@ class VariantParser
   require_relative 'variant'
   require_relative 'allele'
   require_relative 'variant_store'
+  require_relative 'symbol_checker'
   
   
   def parse_alamut_file(file_name, sample_ids)
@@ -16,6 +17,7 @@ class VariantParser
   		
   		SmarterCSV.process( file_name, options ) do |csv|
   			this_variant = Variant.new
+  			puts csv.first.inspect
   			
   			this_variant.chromosome											= csv.first[:chrom]
   			this_variant.position												= csv.first[:pos]
@@ -180,6 +182,7 @@ class VariantParser
   	opt :variants, "Filepath to Alamut file to parse.", :type => String
   	opt :genes, "Filepath to text file with list of valid HGVS gene symbols - one symbol per line.", :type => String
   	opt :hpo_genes, "Filepath to CSV export from HPO web browser.", :type => String
+  	opt :check_genes, "Check gene symbols against HGNC - only process those which are the current symbol"
   	opt :excel_output, "Export results to an Excel spreadsheet."
   end
   
@@ -202,11 +205,16 @@ class VariantParser
   	elsif genes_filepath
   		gene_symbol_list = parser.parse_gene_list(genes_filepath)
   	end
+  	
+  	if opts[:check_genes]
+  		checked_symbols = Array.new
+  		this_symbol_checker = SymbolChecker.new	
+  		checked_gene_symbol_list = this_symbol_checker.check_gene_symbols(gene_symbol_list)
+  		gene_symbol_list = checked_gene_symbol[0]
+  	end
+  	
   	sample_ids = parser.parse_sample_ids(variants_filepath)
   	variants = parser.parse_alamut_file(variants_filepath, sample_ids)
-  	puts sample_ids.inspect
-
-  	puts variants.length
   	
   	variant_store = VariantStore.new(variants)
   	results = variant_store.select_variants(gene_symbol_list, gene_id_list)
