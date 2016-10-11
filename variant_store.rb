@@ -5,16 +5,16 @@ class VariantStore
 			self.variants = variants
   	end
   	    
-    def select_variants(special_gene_symbols, special_gene_ids)
+    def select_variants(special_gene_symbols, special_gene_ids, parse_all)
     	selected_variants = Array.new
   		not_selected_variants = Array.new
   		
   		#Loop through variants 
   		self.variants.each do |this_variant|
-  				
+  				this_variant.find_highest_maf
   				selected = false
   				#Check if the transcript is correct
-  				if ( special_gene_symbols.include?(this_variant.gene) || special_gene_ids.include?("#{this_variant.gene_id}") )
+  				if ( special_gene_symbols.include?(this_variant.gene) || special_gene_ids.include?("#{this_variant.gene_id}") || parse_all )
   					
   						if ['DM', 'DM?', 'FTV', 'R'].include?(this_variant.hgmd_sub_category)
 								# DP, DFP, FP, FTV, DM?, DM, R

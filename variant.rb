@@ -14,15 +14,10 @@ class Variant
 		attr_accessor :branch_point_pos, :branch_point_change
 		attr_accessor :protein_domain_1, :protein_domain_2, :protein_domain_3, :protein_domain_4
 		attr_accessor :rs_id, :rs_validated, :rs_suspect, :rs_validations, :rs_validation_number, :rs_ancestral_allele
-		attr_accessor :rs_heterozygosity, :rs_clinical_significance, :rs_maf, :rs_maf_allele, :rs_maf_count
+		attr_accessor :rs_heterozygosity, :rs_clinical_significance, :rs_maf, :rs_maf_allele, :rs_maf_count, :highest_maf
 		attr_accessor :genomes_1000_freq, :genomes_1000_afr_freq, :genomes_1000_sas_freq, :genomes_1000_eas_freq, :genomes_1000_eur_freq, :genomes_1000_amr_freq
-		attr_accessor :exac_alt_freq_all, :exac_alt_afr_freq, :exac_alt_amr_freq, :exac_alt_eas_freq, :exac_alt_sas_freq, :exac_alt_nfe_freq, :exac_alt_fin_freq, :exac_alt_oth_freq
-		attr_accessor :exac_alt_count_all, :exac_alt_count_afr, :exac_alt_count_amr, :exac_alt_count_eas, :exac_alt_count_sas, :exac_alt_count_nfe, :exac_alt_count_fin, :exac_alt_count_oth
-		attr_accessor :exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth	
-		attr_accessor :exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth, :exac_filter, :exac_read_depth
-		attr_accessor :exac_total_count_all, :exac_total_count_afr, :exac_total_count_amr, :exac_total_count_eas, :exac_total_count_sas, :exac_total_count_nfe, :exac_total_count_fin, :exac_total_count_oth
-		attr_accessor :exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth
-		attr_accessor :exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth
+		attr_accessor :exac_all_freq, :exac_afr_freq, :exac_amr_freq, :exac_eas_freq, :exac_sas_freq, :exac_nfe_freq, :exac_fin_freq, :exac_oth_freq
+		attr_accessor :exac_afr_hmz,:exac_amr_hmz, :exac_eas_hmz, :exac_sas_hmz, :exac_nfe_hmz, :exac_fin_hmz, :exac_oth_hmz,:exac_filter, :exac_read_depth
 		attr_accessor :esp_ref_ea_count, :esp_ref_aa_count, :esp_ref_all_count, :esp_alt_ea_count, :esp_alt_aa_count
 		attr_accessor :esp_alt_all_count, :esp_ea_maf, :esp_aa_maf, :esp_all_maf, :esp_ea_aaf, :esp_aa_aaf, :esp_all_aaf, :esp_avg_read_depth                                                                               
 		attr_accessor :hgmd_id, :hgmd_phenotype, :hgmd_pub_med_id, :hgmd_sub_category                                                                                                                                      
@@ -45,7 +40,7 @@ class Variant
 		end
 
 		def variable_order						
-				variable_order = [:reason_for_selection, :gene, :genotype, :assembly, :position, :genomic_dna_start, :genomic_dna_end, :genomic_nomen, :coding_effect, :var_type, :var_location]
+				variable_order = [:reason_for_selection, :highest_maf, :gene, :genotype, :assembly, :position, :genomic_dna_start, :genomic_dna_end, :genomic_nomen, :coding_effect, :var_type, :var_location]
 				variable_order = variable_order + [:complementary_dna_start, :complementary_dna_end, :cdna_nomen]
 				variable_order = variable_order + [:exon, :intron, :distance_nearest_splice_site, :nearest_splice_site_type, :nearest_splice_site_change]
 				variable_order = variable_order + [:transcript_length, :protein, :uniprot]
@@ -56,13 +51,8 @@ class Variant
 				variable_order = variable_order + [:rs_id, :rs_validated, :rs_suspect, :rs_validations, :rs_validation_number, :rs_ancestral_allele]
 				variable_order = variable_order + [:rs_heterozygosity, :rs_clinical_significance, :rs_maf, :rs_maf_allele, :rs_maf_count]
 				variable_order = variable_order + [:genomes_1000_freq, :genomes_1000_afr_freq,	:genomes_1000_sas_freq, :genomes_1000_eas_freq, :genomes_1000_eur_freq, :genomes_1000_amr_freq]
-				variable_order = variable_order + [:exac_alt_freq_all, :exac_alt_afr_freq, :exac_alt_amr_freq, :exac_alt_eas_freq, :exac_alt_sas_freq, :exac_alt_nfe_freq, :exac_alt_fin_freq, :exac_alt_oth_freq]
-				variable_order = variable_order + [:exac_alt_count_all, :exac_alt_count_afr, :exac_alt_count_amr, :exac_alt_count_eas, :exac_alt_count_sas, :exac_alt_count_nfe, :exac_alt_count_fin, :exac_alt_count_oth]
-				variable_order = variable_order + [:exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth]
-				variable_order = variable_order + [:exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth, :exac_filter, :exac_read_depth]
-				variable_order = variable_order + [:exac_total_count_all, :exac_total_count_afr, :exac_total_count_amr, :exac_total_count_eas, :exac_total_count_sas, :exac_total_count_nfe, :exac_total_count_fin, :exac_total_count_oth]
-				variable_order = variable_order + [:exac_hom_freq_all, :exac_hom_freq_afr, :exac_hom_freq_amr, :exac_hom_freq_eas, :exac_hom_freq_sas, :exac_hom_freq_nfe, :exac_hom_freq_fin, :exac_hom_freq_oth]
-				variable_order = variable_order + [:exac_hom_count_all, :exac_hom_count_afr, :exac_hom_count_amr, :exac_hom_count_eas, :exac_hom_count_sas, :exac_hom_count_nfe, :exac_hom_count_fin, :exac_hom_count_oth]
+				variable_order = variable_order + [:exac_all_freq, :exac_afr_freq, :exac_amr_freq, :exac_eas_freq, :exac_sas_freq, :exac_nfe_freq, :exac_fin_freq, :exac_oth_freq	]
+				variable_order = variable_order + [:exac_afr_hmz,:exac_amr_hmz, :exac_eas_hmz, :exac_sas_hmz, :exac_nfe_hmz, :exac_fin_hmz, :exac_oth_hmz,:exac_filter, :exac_read_depth]
 				variable_order = variable_order + [:esp_ref_ea_count, :esp_ref_aa_count, :esp_ref_all_count, :esp_alt_ea_count, :esp_alt_aa_count]
 				variable_order = variable_order + [:esp_alt_all_count, :esp_ea_maf, :esp_aa_maf, :esp_all_maf, :esp_ea_aaf,	:esp_aa_aaf, :esp_all_aaf, :esp_avg_read_depth]                                                                             				                        
 				variable_order = variable_order + [:hgmd_id, :hgmd_phenotype, :hgmd_pub_med_id, :hgmd_sub_category]
@@ -75,7 +65,7 @@ class Variant
 				variable_order = variable_order + [:sift_prediction, :sift_weight, :sift_median, :mapp_prediction, :mapp_p_value, :mapp_p_value_median]
 				variable_order = variable_order + [:quality_vcf, :filter_vcf]
 				variable_order = variable_order + [:ac, :af, :an, :dp, :fs, :mq, :mq_0, :qd]
-				variable_order = variable_order + [:ad, :dp, :gq, :gt, :pl]
+				#variable_order = variable_order + [:ad, :dp, :gq, :gt, :pl]
 			
 			return variable_order
 		end
@@ -170,6 +160,15 @@ class Variant
 				return false
 			end
 						
+		end
+		
+		def find_highest_maf()
+			
+			maf_array = [self.genomes_1000_freq, self.genomes_1000_afr_freq, self.genomes_1000_sas_freq, self.genomes_1000_eas_freq, self.genomes_1000_eur_freq, self.genomes_1000_amr_freq]
+			maf_array += [self.rs_maf, self.exac_afr_freq, self.exac_amr_freq, self.exac_eas_freq, self.exac_sas_freq, self.exac_nfe_freq, self.exac_oth_freq]
+			maf_array.collect!{|maf| maf.nil? ? 0 : maf }
+			self.highest_maf = maf_array.max
+			
 		end
 
 end

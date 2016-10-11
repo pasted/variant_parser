@@ -13,7 +13,7 @@ class VariantParser
   	variant_array = Array.new 
   	
   	if File.exists?(file_name) && ( File.stat(file_name).size > 0 )
-  	
+
   		SmarterCSV.process( file_name, options ) do |csv|
   			this_variant = Variant.new
 
@@ -90,46 +90,22 @@ class VariantParser
   			this_variant.genomes_1000_eas_freq  				= csv.first[:"1000g_eas_af"]
   			this_variant.genomes_1000_eur_freq  				= csv.first[:"1000g_eur_af"]
   			this_variant.genomes_1000_amr_freq  				= csv.first[:"1000g_amr_af"]
-  			this_variant.exac_alt_freq_all       				= csv.first[:exacaltfreq_all]
-  			this_variant.exac_alt_afr_freq						= csv.first[:exacaltfreq_afr]
-  			this_variant.exac_alt_amr_freq						= csv.first[:exacaltfreq_amr]
-  			this_variant.exac_alt_eas_freq						= csv.first[:exacaltfreq_eas]
-  			this_variant.exac_alt_sas_freq						= csv.first[:exacaltfreq_sas]
-  			this_variant.exac_alt_nfe_freq						= csv.first[:exacaltfreq_nfe]
-  			this_variant.exac_alt_fin_freq						= csv.first[:exacaltfreq_fin]
-  			this_variant.exac_alt_oth_freq						= csv.first[:exacaltfreq_oth]	
-  			this_variant.exac_alt_count_all       				= csv.first[:exacaltcount_all]
-  			this_variant.exac_alt_count_afr						= csv.first[:exacaltcount_afr]
-  			this_variant.exac_alt_count_amr						= csv.first[:exacaltcount_amr]
-  			this_variant.exac_alt_count_eas						= csv.first[:exacaltcount_eas]
-  			this_variant.exac_alt_count_sas						= csv.first[:exacaltcount_sas]
-  			this_variant.exac_alt_count_nfe						= csv.first[:exacaltcount_nfe]
-  			this_variant.exac_alt_count_fin						= csv.first[:exacaltcount_fin]
-  			this_variant.exac_alt_count_oth						= csv.first[:exacaltcount_oth]			
-  			this_variant.exac_total_count_all       			= csv.first[:exactotalcount_all]
-				this_variant.exac_total_count_afr					= csv.first[:exactotalcount_afr]
-				this_variant.exac_total_count_amr					= csv.first[:exactotalcount_amr]
-				this_variant.exac_total_count_eas					= csv.first[:exactotalcount_eas]
-				this_variant.exac_total_count_sas					= csv.first[:exactotalcount_sas]
-				this_variant.exac_total_count_nfe					= csv.first[:exactotalcount_nfe]
-				this_variant.exac_total_count_fin					= csv.first[:exactotalcount_fin]
-				this_variant.exac_total_count_oth					= csv.first[:exactotalcount_oth]			
-				this_variant.exac_hom_freq_all       				= csv.first[:exachomfreq_all]
-				this_variant.exac_hom_freq_afr						= csv.first[:exachomfreq_afr]
-				this_variant.exac_hom_freq_amr						= csv.first[:exachomfreq_amr]
-				this_variant.exac_hom_freq_eas						= csv.first[:exachomfreq_eas]
-				this_variant.exac_hom_freq_sas						= csv.first[:exachomfreq_sas]
-				this_variant.exac_hom_freq_nfe						= csv.first[:exachomfreq_nfe]
-				this_variant.exac_hom_freq_fin						= csv.first[:exachomfreq_fin]
-				this_variant.exac_hom_freq_oth						= csv.first[:exachomfreq_oth]			
-				this_variant.exac_hom_count_all       				= csv.first[:exachomcount_all]
-				this_variant.exac_hom_count_afr						= csv.first[:exachomcount_afr]
-				this_variant.exac_hom_count_amr						= csv.first[:exachomcount_amr]
-				this_variant.exac_hom_count_eas						= csv.first[:exachomcount_eas]
-				this_variant.exac_hom_count_sas						= csv.first[:exachomcount_sas]
-				this_variant.exac_hom_count_nfe						= csv.first[:exachomcount_nfe]
-				this_variant.exac_hom_count_fin						= csv.first[:exachomcount_fin]
-				this_variant.exac_hom_count_oth						= csv.first[:exachomcount_oth]
+  			this_variant.exac_all_freq       				= csv.first[:exacallfreq]
+  			this_variant.exac_afr_freq						= csv.first[:exacafrfreq]
+  			this_variant.exac_amr_freq						= csv.first[:exacamrfreq]
+  			this_variant.exac_eas_freq						= csv.first[:exaceasfreq]
+  			this_variant.exac_sas_freq						= csv.first[:exacsasfreq]
+  			this_variant.exac_nfe_freq						= csv.first[:exacnfefreq]
+  			this_variant.exac_fin_freq						= csv.first[:exacfinfreq]
+  			this_variant.exac_oth_freq						= csv.first[:exacothfreq]
+  			
+  			this_variant.exac_afr_hmz       		= csv.first[:exacafrhmz]
+  			this_variant.exac_amr_hmz						= csv.first[:exacamrhmz]
+  			this_variant.exac_eas_hmz						= csv.first[:exaceashmz]
+  			this_variant.exac_sas_hmz						= csv.first[:exacsashmz]
+  			this_variant.exac_nfe_hmz						= csv.first[:exacnfehmz]
+  			this_variant.exac_fin_hmz						= csv.first[:exacfinhmz]
+  			this_variant.exac_oth_hmz						= csv.first[:exacothhmz]
   			this_variant.exac_filter         	  				= csv.first[:exacfilter]
   			this_variant.exac_read_depth        				= csv.first[:exacreaddepth]
   			this_variant.clin_var_ids           				= csv.first[:clinvarids]
@@ -218,10 +194,11 @@ class VariantParser
   			this_variant.mq 									= csv.first[:mq]
   			this_variant.mq_0									= csv.first[:mq0]
   			this_variant.qd 									= csv.first[:qd]
-  			
+
   			sample_ids.each do |sample_id|
-  				sample_id_lc = sample_id.downcase
+  				sample_id_lc = sample_id.downcase.gsub(/-/,'_')
   				this_allele = Allele.new
+  				
   				this_allele.ad											= csv.first[:"ad_(#{sample_id_lc})"]
   				this_allele.dp											= csv.first[:"dp_(#{sample_id_lc})"]
   				this_allele.gq											= csv.first[:"gq_(#{sample_id_lc})"]
@@ -251,7 +228,9 @@ class VariantParser
   	header = File.foreach(variants_filepath).first
   	header_array = header.split(/\t/)
   	genotype_fields = header_array.select{ |e| e=~/GT/ }
+  	puts genotype_fields
   	sample_ids = genotype_fields.collect{ |e| e.gsub(/GT |\(|\)/, '') }
+  	puts sample_ids
   	sample_ids.map{|id| id.downcase!}
   	return sample_ids
 	end
@@ -288,7 +267,7 @@ class VariantParser
 		header_array = Array.new
 
 		results[0].each do |this_selected_variant|
-			puts this_selected_variant.inspect
+			
 			if header_array.empty?
 				header_array = this_selected_variant.variable_order
 				header_array.map!{ |element| element.to_s }
@@ -312,6 +291,7 @@ class VariantParser
   	opt :genes, "Filepath to text file with list of valid HGVS gene symbols - one symbol per line.", :type => String
   	opt :hpo_genes, "Filepath to CSV export from HPO web browser.", :type => String
   	opt :excel_output, "Export results to an Excel spreadsheet."
+  	opt :parse_all, "Parse all variants without a genelist", :default => false
   end
   
   #Trollop::die :alamut_file, "Alamut file must exist." unless File.exist?(opts[:alamut_file]) if opts[:alamut_file]
@@ -320,9 +300,10 @@ class VariantParser
   genes_filepath = opts[:genes]
   hpo_genes_filepath = opts[:hpo_genes]
   excel_output = opts[:excel_output]
+  parse_all = opts[:parse_all]
   
   
-  if variants_filepath && (genes_filepath || hpo_genes_filepath)
+  if variants_filepath && (genes_filepath || hpo_genes_filepath || parse_all)
 
   	gene_symbol_list = []
   	gene_id_list = []
@@ -336,12 +317,9 @@ class VariantParser
   	sample_ids = parser.parse_sample_ids(variants_filepath)
   	variants = parser.parse_alamut_file(variants_filepath, sample_ids)
   	puts sample_ids.inspect
-
-  	puts variants.length
   	
   	variant_store = VariantStore.new(variants)
-  	results = variant_store.select_variants(gene_symbol_list, gene_id_list)
-  	puts results[0].length
+  	results = variant_store.select_variants(gene_symbol_list, gene_id_list, parse_all)
   	
   	if excel_output
   		this_book = Spreadsheet::Workbook.new
