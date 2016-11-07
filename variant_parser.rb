@@ -17,7 +17,6 @@ class VariantParser
   		
   		SmarterCSV.process( file_name, options ) do |csv|
   			this_variant = Variant.new
-  			puts csv.first.inspect
   			
   			this_variant.chromosome											= csv.first[:chrom]
   			this_variant.position												= csv.first[:pos]
@@ -159,7 +158,7 @@ class VariantParser
 		header_array = Array.new
 
 		results[0].each do |this_selected_variant|
-			puts this_selected_variant.inspect
+			
 			if header_array.empty?
 				header_array = this_selected_variant.variable_order
 				header_array.map!{ |element| element.to_s }
@@ -181,9 +180,10 @@ class VariantParser
   opts = Trollop::options do
   	opt :variants, "Filepath to Alamut file to parse.", :type => String
   	opt :genes, "Filepath to text file with list of valid HGVS gene symbols - one symbol per line.", :type => String
-  	opt :hpo_genes, "Filepath to CSV export from HPO web browser.", :type => String
+  	opt :ontology_genes, "Filepath to CSV export from HPO web browser.", :type => String
   	opt :check_genes, "Check gene symbols against HGNC - only process those which are the current symbol"
   	opt :excel_output, "Export results to an Excel spreadsheet."
+  	opt :proband_sample, "Proband sample ID to include in output", :type => String
   end
   
   #Trollop::die :alamut_file, "Alamut file must exist." unless File.exist?(opts[:alamut_file]) if opts[:alamut_file]
@@ -192,6 +192,7 @@ class VariantParser
   genes_filepath = opts[:genes]
   hpo_genes_filepath = opts[:hpo_genes]
   excel_output = opts[:excel_output]
+  proband_sample_id = opts[:proband_sample]
   
   
   if variants_filepath && (genes_filepath || hpo_genes_filepath)
@@ -217,15 +218,14 @@ class VariantParser
   	variants = parser.parse_alamut_file(variants_filepath, sample_ids)
   	
   	variant_store = VariantStore.new(variants)
-  	results = variant_store.select_variants(gene_symbol_list, gene_id_list)
+  	results = variant_store.select_variants(gene_symbol_list, gene_id_list, proband_sample_id)
   	puts results[0].length
   	
   	if excel_output
   		this_book = Spreadsheet::Workbook.new
   		this_book = parser.variants_to_excel(results, this_book)
-  		this_book.write "results/#{Time.now.strftime("%d-%m-%Y-%H%M%S")}_variants.xls"
+  		this_book.write "results/#{Time.now.strftime("%Y-%m-%d-%H%M%S")}_#{ENV['USER']}.xls"
   	else
-  		puts results.inspect
   		puts "#{results.length} variants selected"
   	end
 

@@ -85,6 +85,19 @@ class Variant
 				end
 				return allele_hash
 		end
+		
+		def check_genotype(query_sample_id)
+			genotype_check = false
+			self.alleles.each_pair do |this_sample_id, this_allele|
+
+				if query_sample_id.downcase == this_sample_id.downcase
+					if (this_allele.gt != "./.") || (this_allele.gt != "0/0")
+						genotype_check = true
+					end
+				end
+			end
+			return genotype_check
+		end
 
 		
 		def print_attributes
