@@ -1,6 +1,5 @@
 class Variant
 
-		
 	  attr_accessor :id, :unannotated_reason, :gene_id, :gene, :gene_description, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand
 	  attr_accessor :go_bio_process, :go_cell_comp, :go_mol_func
 		attr_accessor :transcript_length, :protein, :uniprot, :var_type, :coding_effect, :var_location
@@ -70,7 +69,6 @@ class Variant
 			return variable_order
 		end
 		
-		
 
 		def print_alleles
 				allele_hash = Hash.new
@@ -92,7 +90,11 @@ class Variant
 			self.alleles.each_pair do |this_sample_id, this_allele|
 
 				if query_sample_id.downcase == this_sample_id.downcase
-					if (this_allele.gt != "./.") || (this_allele.gt != "0/0")
+					
+					if (this_allele.eql? './.') || (this_allele.gt.eql? '0/0')
+						genotype_check = false
+						puts "#{this_allele.gt}"
+					else
 						genotype_check = true
 					end
 				end
@@ -181,6 +183,16 @@ class Variant
 			maf_array += [self.rs_maf, self.exac_afr_freq, self.exac_amr_freq, self.exac_eas_freq, self.exac_sas_freq, self.exac_nfe_freq, self.exac_oth_freq]
 			maf_array.collect!{|maf| maf.nil? ? 0 : maf }
 			self.highest_maf = maf_array.max
+			
+		end
+		
+		def merge_variant(other_variant)
+			self.instance_variables.each do |this_variable|
+				#v.instance_variable_get(:@chromosome)
+				if this_variable.instance_variable_get(this_variable) != other_variant.instance_variable_get(this_variable)
+					updated_variable = "#{this_variable.instance_variable_get(this_variable)};#{other_variant.instance_variable_get(this_variable)}"
+					this_variable.instance_variable_set(this_variable, updated_variable)
+				end
 			
 		end
 

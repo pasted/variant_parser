@@ -224,9 +224,33 @@ class VariantParser
   	return variant_array
   end
   
-  def parse_sample_ids(variants_filepath)
+  def parse_cnv_file(file_name, sample_ids)
+  	options = { :col_sep => "\t" }
+  	variant_array = Array.new 
   	
-  	header = File.foreach(variants_filepath).first
+  	if File.exists?(file_name) && ( File.stat(file_name).size > 0 )
+
+  		SmarterCSV.process( file_name, options ) do |csv|
+  			
+  		end
+  	else
+  		puts "ERROR :: CNV file has no content"
+  		if File.exists?(file_name)
+  			puts "File exists? #{File.exists?(file_name)}"
+  			puts "File size? #{File.stat(file_name).size}"
+  		else
+  			puts "File exists? #{File.exists?(file_name)}"
+  		end
+  	end
+  	return cnv_array
+  end
+  
+  
+  
+  
+  def parse_sample_ids(this_filepath)
+  	
+  	header = File.foreach(this_filepath).first
   	header_array = header.split(/\t/)
   	genotype_fields = header_array.select{ |e| e=~/GT/ }
   	puts genotype_fields
@@ -289,6 +313,7 @@ class VariantParser
 	
   opts = Trollop::options do
   	opt :variants, "Filepath to Alamut file to parse.", :type => String
+  	opt :fake_exome_depth, "Filepath to fake Exome Depth file to parse.", :type => String
   	opt :genes, "Filepath to text file with list of valid HGVS gene symbols - one symbol per line.", :type => String
   	opt :ontology_genes, "Filepath to CSV export from HPO web browser.", :type => String
   	opt :check_genes, "Check gene symbols against HGNC - only process those which are the current symbol"
@@ -300,12 +325,16 @@ class VariantParser
   #Trollop::die :alamut_file, "Alamut file must exist." unless File.exist?(opts[:alamut_file]) if opts[:alamut_file]
 
   variants_filepath = opts[:variants]
+  cnvs_filepath = opts[:fake_exome_depth]
   genes_filepath = opts[:genes]
   hpo_genes_filepath = opts[:hpo_genes]
   excel_output = opts[:excel_output]
   proband_sample_id = opts[:proband_sample]
   parse_all = opts[:all]
   
+  if proband_sample_id
+  	proband_sample_id = proband_sample_id.downcase
+  end
   
   if variants_filepath && (genes_filepath || hpo_genes_filepath || parse_all)
 
@@ -329,6 +358,13 @@ class VariantParser
   	sample_ids = parser.parse_sample_ids(variants_filepath)
   	variants = parser.parse_alamut_file(variants_filepath, sample_ids)
   	
+  	if cnvs_filepath
+  		cnv_sample_ids = parser.parse_sample_ids(cnvs_filepath)
+  		cnvs = parser.parse_fake_alamut_file(cnvs_filepath, sample_ids)
+  		cnv_store = CnvStore.new(cnvs)
+  		cnv_results = cnv_store.select_cnvs(gene_symbol_list, gene_id_list, proband_sample_id, parse_all)
+  	end
+  	
   	variant_store = VariantStore.new(variants)
   	results = variant_store.select_variants(gene_symbol_list, gene_id_list, proband_sample_id, parse_all)
 
@@ -339,6 +375,7 @@ class VariantParser
   		this_book.write "results/#{Time.now.strftime("%Y-%m-%d-%H%M%S")}_#{ENV['USER']}.xls"
   	else
   		puts "#{results.length} variants selected"
+  		puts "#{results.inspect}"
   	end
 
   else

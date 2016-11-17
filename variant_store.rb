@@ -4,7 +4,48 @@ class VariantStore
 		def initialize(variants)
 			self.variants = variants
   	end
-  	    
+  	
+  	def collapse_variants()
+
+  		outer_tmp_variants = self.variants
+  		inner_tmp_variants = self.variants
+
+  		outer_tmp_variants.each_with_index do |this_variant, outer_index|
+  			#test this_variant from inner_tmp_variants
+  			duplicate_variant = inner_tmp_variants[outer_index]
+  			#check for equivalency
+  			if duplicate_variant == this_variant
+  				#remove self from other array of variants
+  				inner_tmp_variants.delete_at(outer_index)
+  			end
+  			
+  			inner_tmp_variants.each_with_index do |variant_to_check, inner_index|
+  				if (this_variant.chromosome == variant_to_check.chromosome) && (this_variant.position == variant_to_check.position)
+  					#check if variants share genomic location and variant data
+  					if (this_variant.wt_nuc && variant_to_check.var_nuc) && (this_variant.wt_nuc == variant_to_check.wt_nuc) && (this_variant.var_nuc == variant_to_check.var_nuc)
+  						
+  						this_variant.merge_variant(variant_to_check)
+  						outer_tmp_variants[outer_index] = this_variant
+  						inner_tmp_variants.delete_at(this_index)
+  					elsif this_variant.ins_nuc && (this_variant.ins_nuc == variant_to_check.ins_nuc) 
+  						
+  						this_variant.merge_variant(variant_to_check)
+  						outer_tmp_variants[outer_index] = this_variant
+  						inner_tmp_variants.delete_at(this_index)
+  					elsif this_variant.del_nuc && (this_variant.del_nuc == variant_to_check.del_nuc)
+  						
+  						this_variant.merge_variant(variant_to_check)
+  						outer_tmp_variants[outer_index] = this_variant
+  						inner_tmp_variants.delete_at(this_index)
+  					end#if-elsif clause for equivalency
+  				end#if clause for equivalent genomic location
+  				
+  			end#inner loop
+  			
+  		end#outer loop
+  		
+  		self.variants = outer_tmp_variants
+  	end
 
     def select_variants(special_gene_symbols, special_gene_ids, sample_id, parse_all)
 
@@ -23,8 +64,8 @@ class VariantStore
   				this_variant.find_highest_maf
   				selected = false
   				#Check if the transcript is correct
-  				if ( special_gene_symbols.include?(this_variant.gene) || special_gene_ids.include?("#{this_variant.gene_id}") || parse_all ) && genotype_check
-
+  				if ( special_gene_symbols.include?(this_variant.gene) || special_gene_ids.include?("#{this_variant.gene_id}") || parse_all ) && (genotype_check == true)
+  						puts this_variant.inspect
   					
   						if ['DM', 'DM?', 'FTV', 'R'].include?(this_variant.hgmd_sub_category)
 								# DP, DFP, FP, FTV, DM?, DM, R
@@ -35,7 +76,7 @@ class VariantStore
 							elsif this_variant.var_type == 'substitution' && this_variant.filter_vcf == 'PASS'
 								#2.	Select substitutions that contain ‘PASS’ in Filter(VCF) field; select all indels
 								
-								if ['missense', 'nonsense', 'start loss', 'stop loss'].include?(this_variant.coding_effect)
+								if !['synonymous'].include?(this_variant.coding_effect)
 									#3.	Select all coding non-synonymous variants
 									this_variant.reason_for_selection = "Coding effect"
 									selected_variants.push(this_variant)
