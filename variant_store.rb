@@ -5,10 +5,11 @@ class VariantStore
 			self.variants = variants
   	end
   	
-  	def collapse_variants()
+  	def collapse_variants(variants)
 
-  		outer_tmp_variants = self.variants
-  		inner_tmp_variants = self.variants
+  		outer_tmp_variants = variants
+  		inner_tmp_variants = variants
+  		result_tmp_variants = variants
 
   		outer_tmp_variants.each_with_index do |this_variant, outer_index|
   			#test this_variant from inner_tmp_variants
@@ -23,19 +24,21 @@ class VariantStore
   				if (this_variant.chromosome == variant_to_check.chromosome) && (this_variant.position == variant_to_check.position)
   					#check if variants share genomic location and variant data
   					if (this_variant.wt_nuc && variant_to_check.var_nuc) && (this_variant.wt_nuc == variant_to_check.wt_nuc) && (this_variant.var_nuc == variant_to_check.var_nuc)
-  						
-  						this_variant.merge_variant(variant_to_check)
-  						outer_tmp_variants[outer_index] = this_variant
+  						tmp_variant = this_variant.clone
+  						tmp_variant.merge_variant(variant_to_check)
+  						result_tmp_variants[outer_index] = tmp_variant
   						inner_tmp_variants.delete_at(this_index)
-  					elsif this_variant.ins_nuc && (this_variant.ins_nuc == variant_to_check.ins_nuc) 
+  					elsif this_variant.ins_nucs && (this_variant.ins_nucs == variant_to_check.ins_nucs) 
   						
-  						this_variant.merge_variant(variant_to_check)
-  						outer_tmp_variants[outer_index] = this_variant
+  						tmp_variant = this_variant.clone
+  						tmp_variant.merge_variant(variant_to_check)
+  						result_tmp_variants[outer_index] = tmp_variant
   						inner_tmp_variants.delete_at(this_index)
-  					elsif this_variant.del_nuc && (this_variant.del_nuc == variant_to_check.del_nuc)
+  					elsif this_variant.del_nucs && (this_variant.del_nucs == variant_to_check.del_nucs)
   						
-  						this_variant.merge_variant(variant_to_check)
-  						outer_tmp_variants[outer_index] = this_variant
+  						tmp_variant = this_variant.clone
+  						tmp_variant.merge_variant(variant_to_check)
+  						result_tmp_variants[outer_index] = tmp_variant
   						inner_tmp_variants.delete_at(this_index)
   					end#if-elsif clause for equivalency
   				end#if clause for equivalent genomic location
@@ -44,7 +47,7 @@ class VariantStore
   			
   		end#outer loop
   		
-  		self.variants = outer_tmp_variants
+  		return result_tmp_variants
   	end
 
     def select_variants(special_gene_symbols, special_gene_ids, sample_id, parse_all)
@@ -55,7 +58,7 @@ class VariantStore
   		#Loop through variants 
   		self.variants.each do |this_variant|
 
-  				if sample_id != ''
+  				if sample_id
   					genotype_check = this_variant.check_genotype(sample_id)
   				else
   					genotype_check = true
@@ -76,7 +79,7 @@ class VariantStore
 							elsif this_variant.var_type == 'substitution' && this_variant.filter_vcf == 'PASS'
 								#2.	Select substitutions that contain ‘PASS’ in Filter(VCF) field; select all indels
 								
-								if !['synonymous'].include?(this_variant.coding_effect)
+								if ['missense', 'stop gain', 'nonsense', 'start loss', 'stop loss'].include?(this_variant.coding_effect)
 									#3.	Select all coding non-synonymous variants
 									this_variant.reason_for_selection = "Coding effect"
 									selected_variants.push(this_variant)

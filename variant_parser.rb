@@ -367,12 +367,12 @@ class VariantParser
   	
   	variant_store = VariantStore.new(variants)
   	results = variant_store.select_variants(gene_symbol_list, gene_id_list, proband_sample_id, parse_all)
-
+  	#results[0] = variant_store.collapse_variants(results[0])
   	
   	if excel_output
   		this_book = Spreadsheet::Workbook.new
   		this_book = parser.variants_to_excel(results, this_book)
-  		this_book.write "results/#{Time.now.strftime("%Y-%m-%d-%H%M%S")}_#{ENV['USER']}.xls"
+  		this_book.write "../#{Time.now.strftime("%Y-%m-%d-%H%M%S")}_#{ENV['USER']}.xls"
   	else
   		puts "#{results.length} variants selected"
   		puts "#{results.inspect}"

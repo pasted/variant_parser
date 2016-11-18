@@ -1,6 +1,6 @@
 class Variant
 
-	  attr_accessor :id, :unannotated_reason, :gene_id, :gene, :gene_description, :chromosome, :position, :gene_symbol, :genotype, :full_transcript, :transcript, :strand
+	  attr_accessor :id, :unannotated_reason, :gene_id, :gene, :gene_description, :chromosome, :position, :gene_symbol, :proband_genotype, :full_transcript, :transcript, :strand
 	  attr_accessor :go_bio_process, :go_cell_comp, :go_mol_func
 		attr_accessor :transcript_length, :protein, :uniprot, :var_type, :coding_effect, :var_location
 		attr_accessor :assembly, :genomic_dna_start, :genomic_dna_end, :genomic_nomen
@@ -39,7 +39,7 @@ class Variant
 		end
 
 		def variable_order						
-				variable_order = [:reason_for_selection, :highest_maf, :gene, :genotype, :assembly, :position, :genomic_dna_start, :genomic_dna_end, :genomic_nomen, :coding_effect, :var_type, :var_location]
+				variable_order = [:reason_for_selection, :highest_maf, :gene, :proband_genotype, :assembly, :position, :genomic_dna_start, :genomic_dna_end, :genomic_nomen, :coding_effect, :var_type, :var_location]
 				variable_order = variable_order + [:complementary_dna_start, :complementary_dna_end, :cdna_nomen]
 				variable_order = variable_order + [:exon, :intron, :distance_nearest_splice_site, :nearest_splice_site_type, :nearest_splice_site_change]
 				variable_order = variable_order + [:transcript_length, :protein, :uniprot]
@@ -91,10 +91,10 @@ class Variant
 
 				if query_sample_id.downcase == this_sample_id.downcase
 					
-					if (this_allele.eql? './.') || (this_allele.gt.eql? '0/0')
+					if (this_allele.gt.eql? './.') || (this_allele.gt.eql? '0/0')
 						genotype_check = false
-						puts "#{this_allele.gt}"
 					else
+						self.proband_genotype = this_allele.gt
 						genotype_check = true
 					end
 				end
@@ -193,7 +193,7 @@ class Variant
 					updated_variable = "#{this_variable.instance_variable_get(this_variable)};#{other_variant.instance_variable_get(this_variable)}"
 					this_variable.instance_variable_set(this_variable, updated_variable)
 				end
-			
+			end
 		end
 
 end
