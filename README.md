@@ -34,7 +34,7 @@ Options:
   -o, --ontology-genes=<s>      Filepath to CSV export from HPO web browser.
   -c, --check-genes             Check gene symbols against HGNC - only process those which are the current symbol
   -e, --excel-output            Export results to an Excel spreadsheet.
-  -p, --proband-sample=<s>      Proband sample ID to include in output
+  -p, --proband-sample=<s>      Proband sample ID, only include rows with a call for this sample.
   -a, --all                     Parse all variants without a genelist
   -h, --help                    Show this message
 
