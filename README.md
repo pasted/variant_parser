@@ -22,7 +22,7 @@ Help list of commands
 
 General use, with output to an Excel file
 ```bash
-	ruby variant_parser.rb -v example_alamut_file.txt -g example_gene_list.txt -e
+	ruby variant_parser.rb -v <example_alamut_file.txt> -g <example_gene_list.txt> -p <sample_id> -e
 
 ```
 
@@ -32,11 +32,15 @@ Options:
   -f, --fake-exome-depth=<s>    Filepath to fake Exome Depth file to parse.
   -g, --genes=<s>               Filepath to text file with list of valid HGVS gene symbols - one symbol per line.
   -o, --ontology-genes=<s>      Filepath to CSV export from HPO web browser.
-  -c, --check-genes             Check gene symbols against HGNC - only process those which are the current symbol
+  -a, --approved-genes          Check gene symbols against HGNC - only process those which are the current symbol
   -e, --excel-output            Export results to an Excel spreadsheet.
-  -p, --proband-sample=<s>      Proband sample ID, only include rows with a call for this sample.
-  -a, --all                     Parse all variants without a genelist
+  -p, --proband-sample=<s>      Proband sample ID to include in output
+  -c, --clinvar                 Include ClinVar pathogenic candidates (CliniVarClinSignifs: Pathogenic; ClinVarReviewStatus: 3 or 4; ClinVarOrigins: Germline).
+  -r, --research                Select variants on research criteria.
+  -m, --maf-cutoff=<f>          Set a Minor Allele Frequency (MAF) cutoff - integer out of 1 based on ExAC all populations frequencies; default 0.05. (Default: 0.05)
+  -l, --all                     Parse all variants without a genelist
   -h, --help                    Show this message
+
 
 
 ```
