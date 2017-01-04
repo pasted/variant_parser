@@ -1,6 +1,6 @@
 class Variant
 
-	  attr_accessor :id, :unannotated_reason, :gene_id, :gene, :gene_description, :chromosome, :position, :gene_symbol, :proband_genotype, :full_transcript, :transcript, :strand
+	  attr_accessor :uid, :id, :unannotated_reason, :gene_id, :gene, :gene_description, :chromosome, :position, :gene_symbol, :proband_genotype, :full_transcript, :transcript, :strand
 	  attr_accessor :go_bio_process, :go_cell_comp, :go_mol_func
 		attr_accessor :transcript_length, :protein, :uniprot, :var_type, :coding_effect, :var_location
 		attr_accessor :assembly, :genomic_dna_start, :genomic_dna_end, :genomic_nomen
@@ -31,15 +31,15 @@ class Variant
 		attr_accessor :quality_vcf, :filter_vcf
 		attr_accessor :ac, :af, :an, :dp, :fs, :mq, :mq_0, :qd
 		attr_accessor :ad, :dp, :gq, :gt, :pl
-		attr_accessor :alleles
-		attr_accessor :reason_for_selection, :reason_for_non_selection, :reason_for_filtering
+		attr_accessor :alleles, :transcripts
+		attr_accessor :reason_for_selection, :reason_for_non_selection, :reason_for_filtering, :collapsed
 
 		def initialize
 			self.alleles = Hash.new
 		end
 
 		def variable_order						
-				variable_order = [:reason_for_selection, :highest_maf, :gene, :proband_genotype, :assembly, :position, :genomic_dna_start, :genomic_dna_end, :genomic_nomen, :coding_effect, :var_type, :var_location]
+				variable_order = [:reason_for_selection, :exac_all_freq, :highest_maf, :gene, :transcripts, :proband_genotype, :assembly, :position, :genomic_dna_start, :genomic_dna_end, :genomic_nomen, :coding_effect, :var_type, :var_location]
 				variable_order = variable_order + [:complementary_dna_start, :complementary_dna_end, :cdna_nomen]
 				variable_order = variable_order + [:exon, :intron, :distance_nearest_splice_site, :nearest_splice_site_type, :nearest_splice_site_change]
 				variable_order = variable_order + [:transcript_length, :protein, :uniprot]
@@ -140,7 +140,7 @@ class Variant
 						unwanted_reason = unwanted_variant.reason_for_filtering
 						break
 					elsif (self.del_nucs != nil) && (self.del_nucs == unwanted_variant.del_nucs)
-						puts "****** unwanted DEL ******* #{self.del_nucs} : #{unwanted_variant.del_nucs}"
+						#puts "****** unwanted DEL ******* #{self.del_nucs} : #{unwanted_variant.del_nucs}"
 						unwanted = true
 						unwanted_reason = unwanted_variant.reason_for_filtering
 						break
@@ -180,10 +180,20 @@ class Variant
 		def find_highest_maf()
 			
 			maf_array = [self.genomes_1000_freq, self.genomes_1000_afr_freq, self.genomes_1000_sas_freq, self.genomes_1000_eas_freq, self.genomes_1000_eur_freq, self.genomes_1000_amr_freq]
-			maf_array += [self.rs_maf, self.exac_afr_freq, self.exac_amr_freq, self.exac_eas_freq, self.exac_sas_freq, self.exac_nfe_freq, self.exac_oth_freq]
+			maf_array += [self.rs_maf, self.exac_afr_freq, self.exac_amr_freq, self.exac_eas_freq, self.exac_sas_freq, self.exac_nfe_freq, self.exac_oth_freq, self.exac_all_freq]
 			maf_array.collect!{|maf| maf.nil? ? 0 : maf }
 			self.highest_maf = maf_array.max
 			
+		end
+		
+		def check_maf_cutoff(maf_cutoff)
+			check_cutoff = false
+			if self.exac_all_freq.to_f <= maf_cutoff.to_f
+				check_cutoff = true
+			else
+				check_cutoff = false
+			end
+			return check_cutoff
 		end
 		
 		def merge_variant(other_variant)
@@ -195,5 +205,17 @@ class Variant
 				end
 			end
 		end
+		
+		def to_hash
+    	hash = {}
+    	instance_variables.each do |var| 
+    		#if var == :@alleles
+    			
+    		#else
+    			hash[var[1..-1].to_sym] = instance_variable_get(var)
+    		#end
+    	end
+    	return hash
+  	end
 
 end
