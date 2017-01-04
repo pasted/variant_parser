@@ -26,6 +26,21 @@ General use, with output to an Excel file
 
 ```
 
+```
+Options:
+  -v, --variants=<s>            Filepath to Alamut file to parse.
+  -f, --fake-exome-depth=<s>    Filepath to fake Exome Depth file to parse.
+  -g, --genes=<s>               Filepath to text file with list of valid HGVS gene symbols - one symbol per line.
+  -o, --ontology-genes=<s>      Filepath to CSV export from HPO web browser.
+  -c, --check-genes             Check gene symbols against HGNC - only process those which are the current symbol
+  -e, --excel-output            Export results to an Excel spreadsheet.
+  -p, --proband-sample=<s>      Proband sample ID, only include rows with a call for this sample.
+  -a, --all                     Parse all variants without a genelist
+  -h, --help                    Show this message
+
+
+```
+
 ##Selection of candidate genes
 
 [See the Wiki section on using HPO / Phenomizer](https://github.com/pasted/variant_parser/wiki/Variant-parser---Examples-of-use)
