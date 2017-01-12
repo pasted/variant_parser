@@ -6,15 +6,15 @@ class CnvStore
   	end
   	    
 
-    def select_cnvs(special_gene_symbols, special_gene_ids, sample_id, parse_all)
+    def select_cnvs(special_gene_symbols, sample_id)
 
     	selected_cnvs = Array.new
   		not_selected_cnvs = Array.new
   		
   		#Loop through cnvs 
   		self.cnvs.each do |this_cnv|
-
-  				if sample_id != ''
+  				
+  				if sample_id != '' || sample != nil
   					genotype_check = this_cnv.check_genotype(sample_id)
   				else
   					genotype_check = true
@@ -22,7 +22,7 @@ class CnvStore
 
   				selected = false
   				#Check if the gene symbol is present
-  				if ( special_gene_symbols.include?(this_variant.gene) || special_gene_ids.include?("#{this_variant.gene_id}") || parse_all ) && (genotype_check == true)
+  				if special_gene_symbols.include?(this_cnv.gene) && (genotype_check == true)
 
 								this_cnv.reason_for_selection = "Gene list"
 								selected_cnvs.push(this_cnv)

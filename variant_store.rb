@@ -33,7 +33,7 @@ class VariantStore
   				inner_tmp_variants.each_with_index do |variant_to_check, inner_index|
   					if (this_variant.chromosome == variant_to_check.chromosome) && (this_variant.position == variant_to_check.position) && (this_variant.nearest_splice_site_change == variant_to_check.nearest_splice_site_change) && (this_variant.local_splice_effect == variant_to_check.local_splice_effect) 
   							
-  							hash_key = Digest::SHA256.bubblebabble "#{variant_to_check.chromosome}:#{variant_to_check.position}:#{variant_to_check.nearest_splice_site_change}:#{variant_to_check.local_splice_effect}"
+  							hash_key = Digest::SHA256.bubblebabble "#{variant_to_check.chromosome}:#{variant_to_check.position}:#{variant_to_check.coding_effect}:#{variant_to_check.nearest_splice_site_change}:#{variant_to_check.local_splice_effect}"
   							if result_hash.has_key?(hash_key)
   								variants_ordered_by_length = result_hash.fetch(hash_key)									
   							else

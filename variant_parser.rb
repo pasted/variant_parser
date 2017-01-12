@@ -6,8 +6,10 @@ class VariantParser
   require 'ruby-progressbar'
   require 'digest/bubblebabble'
   require_relative 'variant'
+  require_relative 'cnv'
   require_relative 'allele'
   require_relative 'variant_store'
+  require_relative 'cnv_store'
   require_relative 'symbol_checker'
   
   
@@ -229,13 +231,39 @@ class VariantParser
   
   def parse_cnv_file(file_name, sample_ids)
   	options = { :col_sep => "\t" }
-  	variant_array = Array.new 
+  	cnv_array = Array.new 
   	
   	if File.exists?(file_name) && ( File.stat(file_name).size > 0 )
 
   		SmarterCSV.process( file_name, options ) do |csv|
-  			#chrom	pos	gene	transcript	type	varType	codingEffect	gDNAstart	gDNAend	gNomen	exon	alleleFreq	Filter (VCF)	GT (WE_EX1613468)	DP (WE_EX1613468)	AD (WE_EX1613468)	BF (WE_EX1613468)	GQ (WE_EX1613468)	GT (WE_EX1613470)	DP (WE_EX1613470)	AD (WE_EX1613470)	BF (WE_EX1613470)	GQ (WE_EX1613470)
-  			puts csv.first.inspect
+ 
+  			this_cnv = Cnv.new
+  			this_cnv.chrom					= csv.first[:chrom]
+  			this_cnv.pos						= csv.first[:pos]
+  			this_cnv.gene           = csv.first[:gene]
+  			this_cnv.transcript     = csv.first[:transcript]
+  			this_cnv.type           = csv.first[:type]
+  			this_cnv.var_type       = csv.first[:vartype]
+  			this_cnv.g_dna_start    = csv.first[:gdnastart]
+  			this_cnv.g_dna_end      = csv.first[:gdnaend]
+  			this_cnv.g_nomen        = csv.first[:gnomen]
+  			this_cnv.exon           = csv.first[:exon]
+  			this_cnv.allele_freq    = csv.first[:allelefreq]
+  			this_cnv.filter         = csv.first[:"filter_(vcf)"]
+  			
+  			sample_ids.each do |sample_id|
+  				sample_id_lc = sample_id.downcase.gsub(/-/,'_')
+  				this_allele = Allele.new  				
+  				this_allele.ad											= csv.first[:"ad_(#{sample_id_lc})"]
+  				this_allele.dp											= csv.first[:"dp_(#{sample_id_lc})"]
+  				this_allele.gq											= csv.first[:"gq_(#{sample_id_lc})"]
+  				this_allele.gt											= csv.first[:"gt_(#{sample_id_lc})"]
+  				this_allele.bf											= csv.first[:"bf_(#{sample_id_lc})"]
+
+  				this_cnv.alleles.store("#{sample_id}", this_allele)
+  			end
+  			
+  			cnv_array.push(this_cnv)
   		end
   	else
   		puts "ERROR :: CNV file has no content"
@@ -313,7 +341,8 @@ class VariantParser
   	opt :proband_sample, "Proband sample ID to include in output", :type => String
   	opt :clinvar, "Include ClinVar pathogenic candidates (CliniVarClinSignifs: Pathogenic; ClinVarReviewStatus: 3 or 4; ClinVarOrigins: Germline)."
   	opt :research, "Select variants on research criteria.", :default => false
-  	opt :maf_cutoff, "Set a Minor Allele Frequency (MAF) cutoff - integer out of 1 based on ExAC all populations frequencies; default 0.05.", :default => 0.05
+  	opt :maf_cutoff, "Set a Minor Allele Frequency (MAF) cutoff - integer out of 1 based on ExAC all populations frequencies.", :default => 0.05
+  	opt :result_prefix, "Set the prefix for the result file output, for example Family ID. Defaults to the directory name two levels up from the Alamut variant file."
   	opt :all, "Parse all variants without a genelist", :default => false
   end
   
@@ -329,6 +358,7 @@ class VariantParser
   parse_all = opts[:all]
   research = opts[:research]
   maf_cutoff = opts[:maf_cutoff]
+  result_prefix = opts[:result_prefix]
   
   
   if proband_sample_id
@@ -361,11 +391,14 @@ class VariantParser
   	gene_symbol_list = []
   	gene_id_list = []
   	parser = VariantParser.new()
+  	gene_list_filename = ""
   	
   	if hpo_genes_filepath
   		gene_id_list = parser.parse_hpo_gene_list(hpo_genes_filepath)
+  		gene_list_filename = File.basename("#{hpo_genes_filepath}", ".*")
   	elsif genes_filepath
   		gene_symbol_list = parser.parse_gene_list(genes_filepath)
+  		gene_list_filename = File.basename("#{genes_filepath}", ".*")
   	end
   	
   	if opts[:check_genes]
@@ -378,11 +411,14 @@ class VariantParser
   	sample_ids = parser.parse_sample_ids(variants_filepath)
   	variants = parser.parse_alamut_file(variants_filepath, sample_ids)
   	
-  	if cnvs_filepath
+  	if cnvs_filepath && gene_symbol_list
   		cnv_sample_ids = parser.parse_sample_ids(cnvs_filepath)
   		cnvs = parser.parse_cnv_file(cnvs_filepath, sample_ids)
   		cnv_store = CnvStore.new(cnvs)
-  		cnv_results = cnv_store.select_cnvs(gene_symbol_list, gene_id_list, proband_sample_id, parse_all)
+  		cnv_results = cnv_store.select_cnvs(gene_symbol_list, proband_sample_id)
+  		puts cnv_results.inspect
+  	elsif cnvs_filepath
+  		puts "CNV analysis requires gene symbol list."
   	end
   	
   	variant_store = VariantStore.new(variants)
@@ -397,11 +433,14 @@ class VariantParser
   	
   	collapsed_selected_results = variant_store.collapse_variants(selected_variants)
 
+  	if !result_prefix && File.file?(variants_filepath)
+  		result_prefix = File.expand_path("#{variants_filepath}").split("r01_alamut").first.split('/').last.split('_').first  
+  	end
   	
   	if excel_output
   		this_book = Spreadsheet::Workbook.new
   		this_book = parser.variants_to_excel(collapsed_selected_results, this_book)
-  		this_book.write "../#{Time.now.strftime("%Y-%m-%d-%H%M%S")}_#{ENV['USER']}.xls"
+  		this_book.write "../#{result_prefix}_#{Time.now.strftime("%Y-%m-%d-%H%M%S")}_#{gene_list_filename}_virtual-panel_#{ENV['USER']}.xls"
   	else
   		puts "#{results.length} variants selected"
   		puts "#{results.inspect}"
