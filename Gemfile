@@ -3,4 +3,6 @@ source 'https://rubygems.org' do
 	gem 'smarter_csv'
 	gem 'spreadsheet'
 	gem 'trollop'
+	gem 'ruby-progressbar'
+  gem 'digest'
 end
