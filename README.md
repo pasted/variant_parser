@@ -37,12 +37,10 @@ Options:
   -p, --proband-sample=<s>      Proband sample ID to include in output
   -c, --clinvar                 Include ClinVar pathogenic candidates (CliniVarClinSignifs: Pathogenic; ClinVarReviewStatus: 3 or 4; ClinVarOrigins: Germline).
   -r, --research                Select variants on research criteria.
-  -m, --maf-cutoff=<f>          Set a Minor Allele Frequency (MAF) cutoff - integer out of 1 based on ExAC all populations frequencies; default 0.05. (Default: 0.05)
+  -m, --maf-cutoff=<f>          Set a Minor Allele Frequency (MAF) cutoff - integer out of 1 based on ExAC all populations frequencies. (Default: 0.05)
+  -s, --result-prefix           Set the prefix for the result file output, for example Family ID. Defaults to the directory name two levels up from the Alamut variant file.
   -l, --all                     Parse all variants without a genelist
   -h, --help                    Show this message
-
-
-
 ```
 
 ##Selection of candidate genes
