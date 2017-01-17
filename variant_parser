@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ruby variant_parser.rb  $*
+ruby /mnt/Data4/software/ruby/variant_parser/variant_parser.rb  $*
