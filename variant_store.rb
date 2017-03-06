@@ -104,7 +104,7 @@ class VariantStore
 								this_variant.reason_for_selection = "ClinVar category"
 								selected_variants.push(this_variant)
 								selected = true
-							elsif this_variant.var_type == 'substitution' && this_variant.filter_vcf == 'PASS'
+							elsif this_variant.var_type == 'substitution' && (this_variant.filter_vcf == 'PASS' || parse_all)
 								#2.	Select substitutions that contain ‘PASS’ in Filter(VCF) field; select all indels
 								
 								if ['missense', 'stop gain', 'nonsense', 'start loss', 'stop loss'].include?(this_variant.coding_effect)
